@@ -13,7 +13,8 @@ import ShieldIcon from "@mui/icons-material/Security";
 import { useNavigate } from "react-router-dom";
 
 export function SignUp() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  
   return (
     <Box
       sx={{
@@ -21,26 +22,21 @@ export function SignUp() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "linear-gradient(to bottom right, #f8fafc, #f1f5f9)",
-        p: 2,
-        width: "100vw",
+        background: "linear-gradient(to bottom right, #f8fafc, #f1f5f9)",
+        p: { xs: 1, sm: 2 },
+        width: "100%",
       }}
     >
       <Card
         sx={{
           width: {
-            xs: "18vw", // phones
-            sm: "20vw", // tablets
-            md: "28vw", // small laptops
-            lg: "30vw", // large laptops
-            xl: "25vw", // desktops / 150% zoom
+            xs: "calc(100% - 32px)", // Full width with margin on mobile
+            sm: "400px", // Fixed width on small screens and up
+            md: "420px",
+            lg: "440px",
           },
-          height: {
-            sm: '20rem',
-            md: '25rem',
-            lg: '30rem',
-            xl: '45rem',
-          },
+          maxWidth: "500px", // Maximum width constraint
+          minWidth: "320px", // Minimum width constraint
           boxShadow: 4,
           borderRadius: 3,
           backdropFilter: "blur(8px)",
@@ -57,13 +53,18 @@ export function SignUp() {
                 gap={1}
                 mb={2}
               >
-                <ShieldIcon fontSize="large" sx={{ color: "green" }} />
+                <ShieldIcon 
+                  sx={{ 
+                    color: "green",
+                    fontSize: { xs: "2rem", sm: "2.5rem" }
+                  }} 
+                />
                 <Typography
                   variant="h5"
                   fontWeight="bold"
                   color="text.primary"
                   sx={{
-                    fontSize: { xs: "1.25rem", sm: "1.5rem" },
+                    fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
                   }}
                 >
                   PolicyGuard
@@ -74,7 +75,7 @@ export function SignUp() {
                 fontWeight="600"
                 color="text.primary"
                 sx={{
-                  fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                  fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.4rem" },
                 }}
               >
                 Create your account
@@ -84,24 +85,50 @@ export function SignUp() {
                 color="text.secondary"
                 mt={1}
                 sx={{
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                  fontSize: { xs: "0.85rem", sm: "0.9rem" },
                 }}
               >
                 Get started with PolicyGuard today.
               </Typography>
             </Box>
           }
+          sx={{
+            pb: { xs: 1, sm: 2 }
+          }}
         />
 
-        <CardContent>
+        <CardContent
+          sx={{
+            pt: 0,
+            px: { xs: 2, sm: 3 },
+            pb: { xs: 2, sm: 3 }
+          }}
+        >
           <Box component="form" display="flex" flexDirection="column" gap={2}>
-            <TextField label="Full Name" variant="outlined" fullWidth required />
+            <TextField 
+              label="Full Name" 
+              variant="outlined" 
+              fullWidth 
+              required 
+              size="medium"
+              sx={{
+                '& .MuiInputBase-root': {
+                  fontSize: { xs: '0.9rem', sm: '1rem' }
+                }
+              }}
+            />
             <TextField
               label="Email"
               type="email"
               variant="outlined"
               fullWidth
               required
+              size="medium"
+              sx={{
+                '& .MuiInputBase-root': {
+                  fontSize: { xs: '0.9rem', sm: '1rem' }
+                }
+              }}
             />
             <TextField
               label="Password"
@@ -109,6 +136,12 @@ export function SignUp() {
               variant="outlined"
               fullWidth
               required
+              size="medium"
+              sx={{
+                '& .MuiInputBase-root': {
+                  fontSize: { xs: '0.9rem', sm: '1rem' }
+                }
+              }}
             />
             <TextField
               label="Confirm Password"
@@ -116,6 +149,12 @@ export function SignUp() {
               variant="outlined"
               fullWidth
               required
+              size="medium"
+              sx={{
+                '& .MuiInputBase-root': {
+                  fontSize: { xs: '0.9rem', sm: '1rem' }
+                }
+              }}
             />
 
             <Button
@@ -123,15 +162,26 @@ export function SignUp() {
               variant="contained"
               color="success"
               fullWidth
-              sx={{ height: 44, fontWeight: 500 }}
+              sx={{ 
+                height: { xs: 40, sm: 44 }, 
+                fontWeight: 500,
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                mt: 1
+              }}
             >
               Sign Up
             </Button>
           </Box>
 
           {/* Divider */}
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="caption" color="text.secondary">
+          <Divider sx={{ my: { xs: 2, sm: 3 } }}>
+            <Typography 
+              variant="caption" 
+              color="text.secondary"
+              sx={{
+                fontSize: { xs: '0.75rem', sm: '0.8rem' }
+              }}
+            >
               Or continue with
             </Typography>
           </Divider>
@@ -140,7 +190,10 @@ export function SignUp() {
           <Button
             variant="outlined"
             fullWidth
-            sx={{ height: 44 }}
+            sx={{ 
+              height: { xs: 40, sm: 44 },
+              fontSize: { xs: '0.9rem', sm: '1rem' }
+            }}
             startIcon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -164,10 +217,23 @@ export function SignUp() {
             variant="body2"
             textAlign="center"
             color="text.secondary"
-            mt={3}
+            sx={{ 
+              mt: { xs: 2, sm: 3 },
+              fontSize: { xs: '0.85rem', sm: '0.9rem' }
+            }}
           >
             Already have an account?{" "}
-            <Link color="success.main" fontWeight={500} sx={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
+            <Link 
+              color="success.main" 
+              fontWeight={500} 
+              sx={{ 
+                cursor: 'pointer',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }} 
+              onClick={() => navigate('/login')}
+            >
               Login
             </Link>
           </Typography>

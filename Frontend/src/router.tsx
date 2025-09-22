@@ -4,11 +4,16 @@ import PageNotFound from "./pages/PageNotFound";
 import { SignUp } from "./pages/SignUp";
 import App from "./App";
 import { AuthLayouts } from "./layouts/AuthLayouts";
+import { LandingPage } from "./pages/LandingPage";
 
 export const publicRoutes = [
     {
       path: '/',
       element: <App />,
+    },
+    {
+      path: '/landing',
+      element: <LandingPage />,
     },
     {
         element: <AuthLayouts />,
