@@ -7,6 +7,7 @@ const { generateAccessToken } = require('../utils/jwt');
 const signup = async (req, res) => {    
     try {
         const { name, email, password  } = req.body;
+
         if([name,email,password].some((data)=>String(data).trim()==="")){
             return res.status(400).json({message : "Please fill all the details"})
         }
@@ -18,12 +19,12 @@ const signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password,10);
-        const newUser = new User({name,email,hashedPassword});
+        const newUser = new User({name, email, password: hashedPassword});
         await newUser.save();
-        res.status(201).json({message : "User Created Successfully",user:newUser})
+        res.status(201).json({message : "User Created Successfully"})
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message: "Internal Server Error", });
     }
 }
 

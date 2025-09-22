@@ -8,12 +8,51 @@ import {
   Button,
   Divider,
   Link,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import ShieldIcon from "@mui/icons-material/Security";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
+import { toast } from "react-toastify"
+
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export function SignUp() {
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    watch,
+  } = useForm<FormValues>();
+
+  const password = watch("password");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const onSubmit = async (data: FormValues) => {
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/auth/signup", data);
+      console.log('res :', response);
+      toast.success(response.data.message || "Signup successful! Please log in.");
+      reset();
+    } catch (err: unknown) {
+      console.error("Signup failed:", err);
+    }
+  };
   
   return (
     <Box
@@ -111,6 +150,8 @@ export function SignUp() {
               fullWidth 
               required 
               size="medium"
+              {...register("name", { required: "Name is required" })}
+              error={!!errors.name}
               sx={{
                 '& .MuiInputBase-root': {
                   fontSize: { xs: '0.9rem', sm: '1rem' }
@@ -123,6 +164,14 @@ export function SignUp() {
               variant="outlined"
               fullWidth
               required
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Invalid email address",
+                },
+              })}
+              error={!!errors.email}
               size="medium"
               sx={{
                 '& .MuiInputBase-root': {
@@ -132,28 +181,64 @@ export function SignUp() {
             />
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               required
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Password must be 6+ characters" },
+              })}
+              error={!!errors.password}
               size="medium"
               sx={{
                 '& .MuiInputBase-root': {
                   fontSize: { xs: '0.9rem', sm: '1rem' }
                 }
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Confirm Password"
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               required
+              {...register("confirmPassword", {
+                required: "Confirm Password is required",
+                validate: (value) =>
+                  value === password || "Passwords do not match",
+              })}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
               size="medium"
               sx={{
                 '& .MuiInputBase-root': {
                   fontSize: { xs: '0.9rem', sm: '1rem' }
                 }
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
 
@@ -168,6 +253,8 @@ export function SignUp() {
                 fontSize: { xs: '0.9rem', sm: '1rem' },
                 mt: 1
               }}
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
             >
               Sign Up
             </Button>
@@ -242,3 +329,4 @@ export function SignUp() {
     </Box>
   );
 }
+
