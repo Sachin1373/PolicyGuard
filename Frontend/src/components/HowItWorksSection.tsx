@@ -5,12 +5,6 @@ import {
   Container,
   Grid,
 } from '@mui/material';
-import {
-  Cable as ConnectIcon,
-  Security as ShieldIcon,
-  People as PeopleIcon,
-  CheckCircle as CheckIcon,
-} from '@mui/icons-material';
 import { steps } from '../constants/howItWorks';
 
 interface StepCardProps {
