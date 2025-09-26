@@ -1,5 +1,5 @@
 import { Avatar, Box, IconButton, Menu, MenuItem, Typography, Divider, Badge } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -15,7 +15,7 @@ function DashboardNavbar() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const handleClick = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {

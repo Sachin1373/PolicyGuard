@@ -13,7 +13,7 @@ import {
   } from "@mui/material";
   import ShieldIcon from "@mui/icons-material/Security";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { login } from "../redux/AuthHandler";
 import { toast } from "react-toastify";
@@ -29,14 +29,17 @@ type FormValues = {
     
     const navigate = useNavigate();
     const location = useLocation();
-    if(location.pathname === '/login'){
-     const isAuth = localStorage.getItem('accessToken');
-     
-     if (isAuth) {
-      navigate('/dashboard');
-     }
-    }
 
+    useEffect(() => {
+      if(location.pathname === '/login'){
+        const isAuth = localStorage.getItem('accessToken');
+        
+        if (isAuth) {
+         navigate('/dashboard');
+        }
+       }
+      }, [location.pathname, navigate]);
+      
       
 
     const {
