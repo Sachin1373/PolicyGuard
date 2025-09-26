@@ -8,12 +8,50 @@ import {
     Button,
     Divider,
     Link,
+    InputAdornment,
+    IconButton,
   } from "@mui/material";
   import ShieldIcon from "@mui/icons-material/Security";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { login } from "../redux/AuthHandler";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+
+type FormValues = {
+  email: string;
+  password: string;
+}
   
   export function Login() {
     const navigate = useNavigate();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+      } = useForm<FormValues>();
+
+      const [showPassword, setShowPassword] = useState(false);
+
+      const onSubmit = async (data: FormValues) => {
+          try {
+            const response = await login(data.email, data.password);
+            toast.success(response.data.message);
+            localStorage.setItem('token', response.data.token);
+            navigate('/dashboard');
+            reset();
+          } catch (error: unknown) {
+            console.error('Signup error:', error);
+            const errorMessage = 
+              error instanceof Error && error.message 
+                ? error.message 
+                : 'Signup failed. Please try again.';
+            toast.error(errorMessage);
+          }
+        };
+
     return (
       <Box
         sx={{
@@ -91,13 +129,38 @@ import { useNavigate } from "react-router-dom";
                 variant="outlined"
                 fullWidth
                 required
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: "Invalid email address",
+                  },
+                })}
+                error={!!errors.email}
               />
               <TextField
                 label="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 variant="outlined"
                 fullWidth
                 required
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "Password must be 6+ characters" },
+                })}
+                error={!!errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
   
               <Button
@@ -106,6 +169,8 @@ import { useNavigate } from "react-router-dom";
                 color="success"
                 fullWidth
                 sx={{ height: 44, fontWeight: 500 }}
+                onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
               >
                 Login
               </Button>

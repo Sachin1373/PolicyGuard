@@ -1,14 +1,13 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const { default: mongoose } = require('mongoose');
-const { generateAccessToken } = require('../utils/jwt');
+const { generateAccessToken, generateRefreshToken } = require('../utils/jwt');
 
 
 const signup = async (req, res) => {    
     try {
-        const { name, email, password  } = req.body;
-
-        if([name,email,password].some((data)=>String(data).trim()==="")){
+        const { username, email, password  } = req.body;
+        if([username,email,password].some((data)=>String(data).trim()==="")){
             return res.status(400).json({message : "Please fill all the details"})
         }
 
@@ -19,7 +18,7 @@ const signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password,10);
-        const newUser = new User({name, email, password: hashedPassword});
+        const newUser = new User({username, email, password: hashedPassword});
         await newUser.save();
         res.status(201).json({message : "User Created Successfully"})
     } catch (error) {
@@ -35,12 +34,12 @@ const login = async (req, res) => {
             return res.status(400).json({message : "Please fill all the details"})
         }
 
-        const user  = mongoose.findOne({ email });
+        const user  = await User.findOne({ email });
 
         if (!user) {
             return res.status(400).json({ message: "Invalid Credentials" });
         }
-        const isPasswordValid = await bcrypt.compare(password,user.hashedPassword);
+        const isPasswordValid = await bcrypt.compare(password,user.password);
 
         if (!isPasswordValid) {
             return res.status(400).json({ message: "Invalid Credentials" });

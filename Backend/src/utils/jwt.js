@@ -1,7 +1,13 @@
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+
+console.log("ACCESS_TOKEN_SECRET :", ACCESS_TOKEN_SECRET);
+console.log("REFRESH_TOKEN_SECRET :", REFRESH_TOKEN_SECRET);
 
 const generateAccessToken = (user) => {
     return jwt.sign(
@@ -9,7 +15,9 @@ const generateAccessToken = (user) => {
             id: user._id,
             userName: user.name,
             email: user.email,
-        }
+        },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" }
     )
 }
 
@@ -18,7 +26,9 @@ const generateRefreshToken = (user) => {
         {
             id: user._id,
             email: user.email,
-        }
+        },
+        REFRESH_TOKEN_SECRET,
+        { expiresIn: "7d" }
     )
 }
 

@@ -14,13 +14,13 @@ import {
 import ShieldIcon from "@mui/icons-material/Security";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { toast } from "react-toastify"
+import { signup } from "../redux/AuthHandler";
 
 type FormValues = {
-  name: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -43,14 +43,18 @@ export function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (data: FormValues) => {
-
     try {
-      const response = await axios.post("http://localhost:8000/api/auth/signup", data);
-      console.log('res :', response);
-      toast.success(response.data.message || "Signup successful! Please log in.");
+      const response = await signup(data.username, data.email, data.password);
+      toast.success(response.data.message);
+      navigate('/login');
       reset();
-    } catch (err: unknown) {
-      console.error("Signup failed:", err);
+    } catch (error: unknown) {
+      console.error('Signup error:', error);
+      const errorMessage = 
+        error instanceof Error && error.message 
+          ? error.message 
+          : 'Signup failed. Please try again.';
+      toast.error(errorMessage);
     }
   };
   
@@ -150,8 +154,8 @@ export function SignUp() {
               fullWidth 
               required 
               size="medium"
-              {...register("name", { required: "Name is required" })}
-              error={!!errors.name}
+              {...register("username", { required: "Name is required" })}
+              error={!!errors.username}
               sx={{
                 '& .MuiInputBase-root': {
                   fontSize: { xs: '0.9rem', sm: '1rem' }

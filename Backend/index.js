@@ -13,7 +13,7 @@ const app = express();
 connectDB();
 
 const corsOptions = {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     credentials: 'true',
 }
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
     res.send('Node Server is Up!');
     }
 );
-
+console.log('authRoutes :', authRoutes);
 app.use('/api/auth', authRoutes);
 
 app.listen(PORT, () => {
