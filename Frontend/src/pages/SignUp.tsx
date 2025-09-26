@@ -26,7 +26,7 @@ type FormValues = {
   confirmPassword: string;
 }
 
-export function SignUp() {
+export default function SignUp() {
   const navigate = useNavigate();
 
   const {
@@ -176,6 +176,7 @@ export function SignUp() {
                 },
               })}
               error={!!errors.email}
+              helperText={errors.email?.message}
               size="medium"
               sx={{
                 '& .MuiInputBase-root': {

@@ -1,8 +1,11 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const { default: mongoose } = require('mongoose');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt');
 
+dotenv.config();
 
 const signup = async (req, res) => {    
     try {
@@ -48,9 +51,6 @@ const login = async (req, res) => {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
 
-        user.refreshToken = refreshToken;
-        await user.save();
-
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -82,15 +82,8 @@ const refreshToken = async (req, res) => {
         const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
         const user = await User.findById(payload.id);
 
-        if (!user || user.refreshToken !== refreshToken) {
-            return res.status(403).json({ message: "Invalid refresh token" });
-        }
-
         const newAccessToken = generateAccessToken(user);
         const newRefreshToken = generateRefreshToken(user);
-
-        user.refreshToken = newRefreshToken;
-        await user.save();
 
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
@@ -102,26 +95,23 @@ const refreshToken = async (req, res) => {
         res.json({ accessToken: newAccessToken });
     } catch (error) {
         console.error(error);
-        res.status(403).json({ message: "Invalid refresh token" });
+        if (error.name === "TokenExpiredError") {
+            return res.status(403).json({ message: "Session expired. Please log in again." });
+          }
+      
+          res.status(403).json({ message: "Invalid refresh token" });
     }
 }
 
 const logout = async (req, res) => {
     const { refreshToken } = req.cookies;
-
     if (!refreshToken) {
         return res.status(400).json({ message: "No refresh token provided" });
     }
 
     try {
-        const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const user = await User.findById(payload.id);
-
-        if (user) {
-            user.refreshToken = null;
-            await user.save();
-        }
-
+        const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, { algorithms: ['HS256'] });
+    
         res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

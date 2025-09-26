@@ -3,6 +3,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001',
+    withCredentials: true,
     timeout: 10000,
     headers: {'X-Custom-Header': 'foobar'}
 });
@@ -31,6 +32,14 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       console.error("Unauthorized! Maybe refresh token?");
       // You could trigger a logout or token refresh here
+      axiosInstance.post('/auth/refresh-token')
+        .then(response => {
+          localStorage.setItem("accessToken", response.data.accessToken);
+        }
+        ).catch(err => {
+          console.error("Token refresh failed:", err);
+        }
+        );
     }
     return Promise.reject(error);
   }

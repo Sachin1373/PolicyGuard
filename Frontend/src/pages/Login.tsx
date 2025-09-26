@@ -18,14 +18,27 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { login } from "../redux/AuthHandler";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 
 type FormValues = {
   email: string;
   password: string;
 }
   
-  export function Login() {
+  export default function Login() {
+    
     const navigate = useNavigate();
+    const location = useLocation();
+    if(location.pathname === '/login'){
+     const isAuth = localStorage.getItem('accessToken');
+     
+     if (isAuth) {
+      navigate('/dashboard');
+     }
+    }
+
+      
+
     const {
         register,
         handleSubmit,
@@ -39,7 +52,7 @@ type FormValues = {
           try {
             const response = await login(data.email, data.password);
             toast.success(response.data.message);
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('accessToken', response.data.accessToken);
             navigate('/dashboard');
             reset();
           } catch (error: unknown) {

@@ -6,14 +6,11 @@ dotenv.config();
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-console.log("ACCESS_TOKEN_SECRET :", ACCESS_TOKEN_SECRET);
-console.log("REFRESH_TOKEN_SECRET :", REFRESH_TOKEN_SECRET);
-
 const generateAccessToken = (user) => {
     return jwt.sign(
         {
             id: user._id,
-            userName: user.name,
+            username: user.username,
             email: user.email,
         },
         ACCESS_TOKEN_SECRET,
