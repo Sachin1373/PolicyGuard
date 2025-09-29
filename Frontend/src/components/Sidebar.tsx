@@ -8,22 +8,24 @@ import SecurityIcon from '@mui/icons-material/Security';
 import AppsIcon from '@mui/icons-material/Apps';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 export function Sidebar() {
-
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<number>(0);
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
+        navigate(tabItems[newValue].path);
     };
 
     const tabItems = [
-        { icon: <DashboardIcon />, label: "Dashboard" },
-        { icon: <PeopleAltIcon />, label: "Users" },
-        { icon: <ShieldIcon />, label: "Roles" },
-        { icon: <AppsIcon />, label: "Apps" },
-        { icon: <TextSnippetIcon />, label: "Reports" },
+        { icon: <DashboardIcon />, label: "Dashboard", path: "/dashboard" },
+        { icon: <PeopleAltIcon />, label: "Users", path: "/users" },
+        { icon: <ShieldIcon />, label: "Roles", path: "/roles" },
+        { icon: <AppsIcon />, label: "Apps", path: "/apps" },
+        { icon: <TextSnippetIcon />, label: "Reports", path: "/reports" },
     ];
 
     return (

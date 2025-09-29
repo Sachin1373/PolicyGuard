@@ -2,19 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import  Login  from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import  SignUp  from "./pages/SignUp";
-import App from "./App";
 import { AuthLayouts } from "./layouts/AuthLayouts";
 import { LandingPage } from "./pages/LandingPage";
 import { ProtectedRoute } from "./protectedRoutes";
 import Dashboard from "./pages/Dashboard";
+import Apps from "./pages/Apps";
 
 export const publicRoutes = [
     {
       path: '/',
-      element: <App />,
-    },
-    {
-      path: '/landing',
       element: <LandingPage />,
     },
     {
@@ -40,7 +36,15 @@ export const privateRoutes = [
           <Dashboard />
         </ProtectedRoute>
       ),
-    }
+    },
+    {
+      path: '/apps',
+      element: (
+        <ProtectedRoute>
+          <Apps />
+        </ProtectedRoute>
+      ),
+    },
   ];
 
 export const fallbackRoute = [
