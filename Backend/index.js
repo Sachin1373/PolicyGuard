@@ -5,6 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./src/db/dbconnection');
 const authRoutes = require('./src/routes/auth');
+const appRoutes = require('./src/routes/appIntigration');
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
     }
 );
 app.use('/api/auth', authRoutes);
+app.use('/api/intigration',appRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

@@ -7,26 +7,35 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import SecurityIcon from '@mui/icons-material/Security';
 import AppsIcon from '@mui/icons-material/Apps';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
+const tabItems = [
+    { icon: <DashboardIcon />, label: "Dashboard", path: "/dashboard" },
+    { icon: <PeopleAltIcon />, label: "Users", path: "/users" },
+    { icon: <ShieldIcon />, label: "Roles", path: "/roles" },
+    { icon: <AppsIcon />, label: "Apps", path: "/apps" },
+    { icon: <TextSnippetIcon />, label: "Reports", path: "/reports" },
+];
 
 export function Sidebar() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState<number>(0);
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    // Update active tab based on current location
+    useEffect(() => {
+        const currentPath = location.pathname;
+        const tabIndex = tabItems.findIndex(item => item.path === currentPath);
+        if (tabIndex !== -1) {
+            setActiveTab(tabIndex);
+        }
+    }, [location.pathname]);
+
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
         navigate(tabItems[newValue].path);
     };
-
-    const tabItems = [
-        { icon: <DashboardIcon />, label: "Dashboard", path: "/dashboard" },
-        { icon: <PeopleAltIcon />, label: "Users", path: "/users" },
-        { icon: <ShieldIcon />, label: "Roles", path: "/roles" },
-        { icon: <AppsIcon />, label: "Apps", path: "/apps" },
-        { icon: <TextSnippetIcon />, label: "Reports", path: "/reports" },
-    ];
 
     return (
         <>

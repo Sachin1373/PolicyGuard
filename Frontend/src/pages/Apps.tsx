@@ -4,7 +4,7 @@ import {
   Typography,
   Chip,
 } from '@mui/material';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { Add as AddIcon } from '@mui/icons-material';
 import AppCard from '../components/AppCard';
 import { applications } from '../constants/applications';
@@ -26,7 +26,7 @@ export default function Apps() {
     console.log('Connect app:', appId);
   };
 
-  const handleAddIntegration = () => {
+  const handleAddIntegration = async() => {
     console.log('Add new integration');
   };
 
@@ -57,6 +57,7 @@ export default function Apps() {
                 backgroundColor: '#45a049',
               },
             }}
+            
           >
             Add Integration
           </Button>
