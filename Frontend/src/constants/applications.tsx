@@ -12,7 +12,7 @@ export const applications = [
     icon: <GitHubIcon />,
     title: 'GitHub',
     description: 'Code repository and version control',
-    connected: true,
+    connected: false,
     data: '',
     users: '2 users',
   },

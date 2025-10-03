@@ -9,8 +9,13 @@ import { Add as AddIcon } from '@mui/icons-material';
 import AppCard from '../components/AppCard';
 import { applications } from '../constants/applications';
 import DashboardLayout from '../layouts/DashboardLayout';
+import IntegrationModal from '../components/AddIntegrationModal';
+import React from 'react';
 
 export default function Apps() {
+  const [integrationModalOpen, setIntegrationModalOpen] = React.useState(false);
+  const handleOpen = () => setIntegrationModalOpen(true);
+  const handleClose = () => setIntegrationModalOpen(false);
   const connectedApps = applications.filter(app => app.connected);
   const availableApps = applications.filter(app => !app.connected);
 
@@ -26,7 +31,7 @@ export default function Apps() {
     console.log('Connect app:', appId);
   };
 
-  const handleAddIntegration = async() => {
+  const handleAddIntegration = async () => {
     console.log('Add new integration');
   };
 
@@ -47,7 +52,7 @@ export default function Apps() {
             variant="contained"
             color='success'
             startIcon={<AddIcon />}
-            onClick={handleAddIntegration}
+            onClick={handleOpen}
             sx={{
               textTransform: 'none',
               fontWeight: 600,
@@ -57,15 +62,15 @@ export default function Apps() {
                 backgroundColor: '#45a049',
               },
             }}
-            
+
           >
             Add Integration
           </Button>
         </Box>
 
         {/* Connected Applications Section */}
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             mb: 6,
             backgroundColor: '#fafafa',
             borderRadius: 2,
@@ -86,10 +91,10 @@ export default function Apps() {
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             Applications currently integrated with PolicyGuard ({connectedApps.length} connected).
           </Typography>
-          
+
           <Grid container spacing={3}>
             {connectedApps.map((app) => (
-              <Grid item xs={12} sm={6} md={4} key={app.id} sx={{  width: '30%' }}>
+              <Grid item xs={12} sm={6} md={4} key={app.id} sx={{ width: '30%' }}>
                 <AppCard
                   id={app.id}
                   icon={app.icon}
@@ -108,7 +113,7 @@ export default function Apps() {
 
         {/* Available Integrations Section */}
         <Box
-          sx={{ 
+          sx={{
             backgroundColor: '#fafafa',
             borderRadius: 2,
             p: 4,
@@ -128,10 +133,10 @@ export default function Apps() {
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             Popular applications you can connect to PolicyGuard ({availableApps.length} available).
           </Typography>
-          
+
           <Grid container spacing={3}>
             {availableApps.map((app) => (
-              <Grid item xs={12} sm={6} md={4} key={app.id} sx={{  width: '30%' }}>
+              <Grid item xs={12} sm={6} md={4} key={app.id} sx={{ width: '30%' }}>
                 <AppCard
                   id={app.id}
                   icon={app.icon}
@@ -145,6 +150,22 @@ export default function Apps() {
           </Grid>
         </Box>
       </Box>
+      {
+        integrationModalOpen && (
+          <IntegrationModal
+            title='Add Integration'
+            description='Connect popular applications to PolicyGuard.'
+            handleClose={handleClose}
+            open={integrationModalOpen}
+            apps={availableApps.map(app => ({
+              name: app.title,
+              icon: app.icon,
+              disc: app.description,
+            }))}
+            
+          />
+        )
+      }
     </DashboardLayout>
   );
 }
