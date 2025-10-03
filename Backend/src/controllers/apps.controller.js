@@ -35,7 +35,15 @@ const createGitHubIntegration = async (req, res) => {
     });
 
     await integration.save();
-     const encryptedToken = encrypt(personalAccessToken);
+  
+     let encryptedToken
+     try {
+       encryptedToken = encrypt(personalAccessToken);
+     } catch (error) {
+        // Rollback the integration if encryption fails
+        await Integration.findByIdAndDelete(integration._id);
+        return res.status(500).json({ message: 'encryption token failed' })
+     }
 
      const ghConfig = new GitHubIntegrationConfig({
        integrationId: integration._id,
